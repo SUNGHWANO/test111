@@ -8,7 +8,7 @@
 <script type="text/javascript" src="js/jquery.ui.touch.js"></script>
 <script type="text/javascript" src="js/common_no.js"></script>
 <script type="text/javascript" src="js/timer.js"></script>
-<script type="text/javascript" src="js/cs_drag_font.js"></script>
+<script type="text/javascript" src="js/cs_drag_setting.js"></script>
 
 <link rel="stylesheet" href="font/font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" href="css/lineconStyle.css">
@@ -16,14 +16,14 @@
 <link rel="stylesheet" href="css/common_font.css">
 <title>Main</title>
 <style type="text/css">
-#bottomBar {
-  position:absolute;
-  background-color:#abc;
-  left:105px;
-  width:90px;
-  height:10px;
-  top: 95%;
-}
+body { overflow: hidden;}
+#middle { width: 70px; height: 70px; border: 1px solid red;}
+#footer { border: 1px solid red; position: absolute; margin-top: 200px;}
+#setting { background: #ccc; width: 100%; height: 600px;  
+position: absolute; top: 500px; }
+#setting_down { background: aliceblue; width: 100%; height: 100px; 
+position:absolute; top: 500px;}
+
 </style>
 </head>
 <body>
@@ -32,7 +32,8 @@
 	<section id="iconMainDiv">
 		<div id="start"><i class="fa fa-play"></i></div>
 		
-		<div id="middle"><!-- <i class="li li_tv"></i> 아이콘이 여기로 --></div>
+		<div id="middle"><!-- 아이콘이 여기로 --></div>
+		<div id="footer"></div>
 		
 	  <div id="one" class="drag iconMain center top"><i class="li li_tv"></i></div>
 	  <div id="two" class="drag iconMain left top"><i class="fa fa-cutlery"></i></div>
@@ -48,35 +49,58 @@
 </section>
 
 <p id="result"></p>
-<script>
-var menu_flag = true;
 
-$(".bottomBar").click(function(){
+<article id="setting">
+	<div id="setting_down"></div>
+</article>
+
+<script>
+var position = 'bottom';
+
+$('#setting').draggable({axis: "y"}, { revert: 'invalid' });
+
+$('#setting_down').click(function(){
+	if (position == 'bottom') {
+ 		$('#setting').animate({top: 60}, {duration: 700
+			, step: function(now, fx) {
+				position = 'top';
+			}
+		});
+	} else {
+		$('#setting').animate({top: 600}, {duration: 700
+			, step: function(now, fx) {
+				position = 'bottom';
+			}
+		});
+	}
 	
-  if (menu_flag) {
-	  
-	  
-  	$(".center.top").animate({"top": "-=5px"/* ,"left": "-=100px" */}, "600"); 
-  	$(".left.top").animate({"top": "-=75px"},"400");
-  	$(".right.top").animate({"top": "-=75px"}, "400");
-		$(".left.bottom").animate({"top": "-=120px"}, "300");
-		$(".right.bottom").animate({"top": "-=120px"}, "300"); 
-		$(".center.bottom").animate({"top": "-=190px"}, "200");
-		$("#start").fadeOut(400);
-		menu_flag = false;
+})
+
+$('#middle').droppable({accept: "#setting"}, {tolerance: "touch"}, {
+	drop: function(event, ui) {
+		console.log(event);
+		console.log(ui);
 		
-  } else {
-	  $(".center.top").animate({"top": "+=5px"}, "600"); 
-	  	 $(".left.top").animate({"top": "+=75px"},"400");
-	  	$(".right.top").animate({"top": "+=75px"}, "400");
-			$(".left.bottom").animate({"top": "+=120px"}, "300");
-			$(".right.bottom").animate({"top": "+=120px"}, "300"); 
-			$(".center.bottom").animate({"top": "+=190px"}, "200"); 
-			$("#start").fadeIn(400);
-	    menu_flag = true;
-	    
-  }
+		if (position == 'bottom') {
+			$('#setting').animate({top: 60}, {duration: 700
+				, step: function(now, fx) {
+					console.log(now);
+					position = 'top';
+					$('#middle').droppable({tolerance: "pointer"});
+				}
+			});
+		}  else {
+			$('#setting').animate({top: 500}, {duration: 700
+				, step: function(now, fx) {
+					console.log(now);
+					position = 'bottom';
+					$('#middle').droppable({tolerance: "touch"});
+				}
+			});
+		} 
+	}
 });
+
 </script>
 </body>
 </html>
